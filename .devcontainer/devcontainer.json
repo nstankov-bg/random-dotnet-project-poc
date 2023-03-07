@@ -1,0 +1,11 @@
+{
+    "name": "My Dev Container",
+    "image": "mcr.microsoft.com/dotnet/sdk:6.0",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "workspaceFolder": "/workspace",
+    "extensions": ["ms-dotnettools.csharp"],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "postCreateCommand": "git submodule update --recursive --init && cd www && dotnet dev-certs https && dotnet watch run"
+}

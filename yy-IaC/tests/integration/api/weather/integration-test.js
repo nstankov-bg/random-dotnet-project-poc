@@ -1,5 +1,5 @@
-import { sleep, check } from "k6";
 import http from "k6/http";
+import { check } from "k6";
 
 // See https://k6.io/docs/using-k6/options
 export const options = {
@@ -28,11 +28,9 @@ export default function () {
     const url =
         "https://app-nstankov-bg-random-dotnet-crm-poc-pr-2.cloud.okteto.net/api/weather";
     const response = http.get(url);
-    console.log(response.status + " " + response.body);
+
     check(response, {
         "status is 200": (r) => r.status === 200,
         "response has data": (r) => r.json().length > 0,
     });
-
-    sleep(1);
 }

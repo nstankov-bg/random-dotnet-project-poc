@@ -1,41 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -c
-    kompose.version: 1.28.0 (HEAD)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: app
-    kompose.service.expose: testdotnet.nstankov.com
-    kompose.service.group: app
-    kompose.service.type: clusterip
-  name: app
+  name: random-dotnet-crm-poc
 spec:
-  replicas: 4
+  replicas: 3
   selector:
     matchLabels:
-      io.kompose.service: app
-  strategy: {}
+      app: random-dotnet-crm-poc
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -c
-        kompose.version: 1.28.0 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/random-dotnet-crm-poc-default: "true"
-        io.kompose.service: app
+        app: random-dotnet-crm-poc
     spec:
       containers:
-        - image: nikoogle/test-dotnet-app-public:latest
-          name: app
-          ports:
-            - containerPort: 80
+        - name: app
+          image: nikoogle/test-dotnet-app-public:latest-slim
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1001
+            runAsGroup: 2000
+            privileged: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+          env:
+            - name: DOTNET_USE_POLLING_FILE_WATCHER
+              value: "true"
           resources:
             limits:
-              memory: "2147483648"
+              cpu: 0.5
+              memory: 2Gi
             requests:
-              memory: "536870912"
-      restartPolicy: Always
-status: {}
+              cpu: 0.25
+          livenessProbe:
+            httpGet:
+              path: /api/weather
+              port: 80

@@ -32,8 +32,7 @@ build: git-release #Still uses this, as Kaniko via Waypoint does not yet support
 		--tag $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_IMAGE_NAME):$(VERSION) \
 		--tag $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_IMAGE_NAME):latest \
 		--target serve \
-		. --no-cache \
-		--push
+		. --no-cache
 
 
 local-up:
